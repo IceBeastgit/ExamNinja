@@ -1,7 +1,5 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
-import com.globalitgeeks.examninja.usermanagement.dto.ChangePasswordRequest;
-import com.globalitgeeks.examninja.usermanagement.dto.LoginRequest;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -29,29 +27,11 @@ public class UserService {
     }
 
     // Login user
-    public User login(String email, String password) throws Exception {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
-            throw new Exception("Email not found");
-        }
-        User user = userOpt.get();
-        if (!user.getPassword().equals(password)) {
-            throw new Exception("Invalid password");
-        }
-        return user;
-    }
+
 
 
     // Change user password
-    public User changePassword(String email, String newPassword) throws Exception {
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        if (userOpt.isEmpty()) {
-            throw new Exception("User not found");
-        }
-        User user = userOpt.get();
-        user.setPassword(newPassword);
-        return userRepository.save(user);
-    }
+
 
     // Validate user request fields
     private void validateUserRequest(UserRequest userRequest) {
