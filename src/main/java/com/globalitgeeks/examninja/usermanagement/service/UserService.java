@@ -31,6 +31,17 @@ public class UserService {
 
 
     // Change user password
+    public User changePassword(String email, String newPassword) throws Exception {
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        if (userOpt.isEmpty()) {
+            throw new Exception("User not found");
+        }
+        User user = userOpt.get();
+        user.setPassword(newPassword);
+        return userRepository.save(user);
+    }
+
+
 
 
     // Validate user request fields

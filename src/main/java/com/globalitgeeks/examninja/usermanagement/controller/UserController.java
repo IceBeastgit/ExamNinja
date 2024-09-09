@@ -1,5 +1,6 @@
 package com.globalitgeeks.examninja.usermanagement.controller;
 
+import com.globalitgeeks.examninja.usermanagement.dto.ChangePasswordRequest;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.service.UserService;
@@ -29,5 +30,15 @@ public class UserController {
 
 
     // Change Password Endpoint
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            User updatedUser = userService.changePassword(request.getEmail(), request.getNewPassword());
+            return ResponseEntity.ok(updatedUser);
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
 
 }
