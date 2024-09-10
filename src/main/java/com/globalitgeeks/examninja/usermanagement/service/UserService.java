@@ -1,6 +1,8 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
+import com.globalitgeeks.examninja.usermanagement.dto.ChangePasswordRequest;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
+import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +33,14 @@ public class UserService {
 
 
     // Change user password
-    public User changePassword(String email, String newPassword) throws Exception {
-        Optional<User> userOpt = userRepository.findByEmail(email);
+    public User changePassword(ChangePasswordRequest request) throws Exception {
+        validateChangePasswordRequest(request);
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isEmpty()) {
             throw new Exception("User not found");
         }
         User user = userOpt.get();
-        user.setPassword(newPassword);
+        user.setPassword(request.getNewPassword());
         return userRepository.save(user);
     }
 
@@ -47,18 +50,28 @@ public class UserService {
     // Validate user request fields
     private void validateUserRequest(UserRequest userRequest) {
         if (userRequest.getFirstName() == null || userRequest.getFirstName().trim().isEmpty()) {
-            throw new IllegalArgumentException("First name is required.");
+            throw new ValidationException("First name is required.");
         }
         if (userRequest.getLastName() == null || userRequest.getLastName().trim().isEmpty()) {
-            throw new IllegalArgumentException("Last name is required.");
+            throw new ValidationException("Last name is required.");
         }
         if (userRequest.getEmail() == null || !isValidEmail(userRequest.getEmail())) {
-            throw new IllegalArgumentException("Invalid email format.");
+            throw new ValidationException("Invalid email format.");
         }
         if (userRequest.getPassword() == null || !isValidPassword(userRequest.getPassword())) {
-            throw new IllegalArgumentException("Password must be at least 8 characters long and contain 1 special character and 2 numbers.");
+            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
         }
     }
+
+    private void validateChangePasswordRequest(ChangePasswordRequest request) {
+        if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
+            throw new ValidationException("Invalid email format.");
+        }
+        if (request.getNewPassword()== null || !isValidPassword(request.getNewPassword())) {
+            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
+        }
+    }
+
 
     // Check if email format is valid
     private boolean isValidEmail(String email) {

@@ -2,6 +2,7 @@ package com.globalitgeeks.examninja.usermanagement.controller;
 
 import com.globalitgeeks.examninja.usermanagement.dto.ChangePasswordRequest;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
+import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +22,9 @@ public class UserController {
         try {
             User registeredUser = userService.register(userRequest);
             return ResponseEntity.status(201).body(registeredUser);
-        } catch (Exception e) {
+        }catch (ValidationException e) {
+            throw e;
+    }catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
@@ -33,8 +36,10 @@ public class UserController {
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
         try {
-            User updatedUser = userService.changePassword(request.getEmail(), request.getNewPassword());
+            User updatedUser = userService.changePassword(request);
             return ResponseEntity.ok(updatedUser);
+        } catch (ValidationException e) {
+            throw e;
         } catch (Exception e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }
