@@ -33,9 +33,9 @@ public class UserController {
 
     // Login Endpoint
      @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody UserRequest request) {
         try {
-            User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            User user = userService.login(request.getEmail(), request.getPassword());
             return ResponseEntity.ok(user);
         } catch (Exception e) {
             return ResponseEntity.status(401).body(e.getMessage());
