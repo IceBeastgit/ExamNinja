@@ -1,13 +1,15 @@
 package com.globalitgeeks.examninja.usermanagement.controller;
 
-import com.globalitgeeks.examninja.usermanagement.dto.ChangePasswordRequest;
-import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
+import com.globalitgeeks.examninja.usermanagement.dto.*;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.regex.Pattern;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -22,9 +24,9 @@ public class UserController {
         try {
             User registeredUser = userService.register(userRequest);
             return ResponseEntity.status(201).body(registeredUser);
-        }catch (ValidationException e) {
+        } catch (ValidationException e) {
             throw e;
-    }catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }
     }
@@ -42,16 +44,15 @@ public class UserController {
 
     // Change Password Endpoint
     @PutMapping("/change-password")
-    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+    public ResponseEntity<?> changePassword(@RequestBody UserRequest request) {
         try {
             User updatedUser = userService.changePassword(request);
-            return ResponseEntity.ok(updatedUser);
+            ApiResponse<User> response = new ApiResponse<>("success", "Password changed successfully", updatedUser);
+            return ResponseEntity.ok(response);
         } catch (ValidationException e) {
-            throw e;
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.status(404).body(e.getMessage());
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
         }
     }
-
-
 }
