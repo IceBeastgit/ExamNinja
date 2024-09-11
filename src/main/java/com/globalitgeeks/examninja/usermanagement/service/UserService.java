@@ -56,6 +56,20 @@ public class UserService {
     }
 
     // Login user
+    public User login(String email, String password) throws Exception {
+        Optional<User> userOptional = userRepository.findByEmail(email);
+
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getPassword().equals(password)) {
+                return user;
+            } else {
+                throw new Exception("Invalid password");
+            }
+        } else {
+            throw new Exception("User not found");
+        }
+    }
 
 
     // Change user password
