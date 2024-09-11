@@ -1,6 +1,5 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
-import com.globalitgeeks.examninja.usermanagement.dto.ChangePasswordRequest;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
@@ -27,26 +26,6 @@ public class UserService {
         user.setPassword(userRequest.getPassword());
         return userRepository.save(user);
     }
-
-    // Login user
-
-
-
-    // Change user password
-    public User changePassword(ChangePasswordRequest request) throws Exception {
-        validateChangePasswordRequest(request);
-        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
-        if (userOpt.isEmpty()) {
-            throw new Exception("User not found");
-        }
-        User user = userOpt.get();
-        user.setPassword(request.getNewPassword());
-        return userRepository.save(user);
-    }
-
-
-
-
     // Validate user request fields
     private void validateUserRequest(UserRequest userRequest) {
         if (userRequest.getFirstName() == null || userRequest.getFirstName().trim().isEmpty()) {
@@ -62,17 +41,6 @@ public class UserService {
             throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
         }
     }
-
-    private void validateChangePasswordRequest(ChangePasswordRequest request) {
-        if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
-            throw new ValidationException("Invalid email format.");
-        }
-        if (request.getNewPassword()== null || !isValidPassword(request.getNewPassword())) {
-            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
-        }
-    }
-
-
     // Check if email format is valid
     private boolean isValidEmail(String email) {
         String emailRegex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -86,4 +54,34 @@ public class UserService {
                 password.chars().anyMatch(Character::isDigit) &&
                 password.chars().anyMatch(ch -> "!@#$%^&*()_+{}|:<>?[];',./`~".indexOf(ch) >= 0);
     }
+
+    // Login user
+
+
+    // Change user password
+    public User changePassword(UserRequest request) throws Exception {
+        validateChangePasswordRequest(request);
+        Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
+        if (userOpt.isPresent()) {
+            User userPass = userOpt.get();
+            userPass.setPassword(request.getPassword());
+            return userRepository.save(userPass);
+        }
+        else throw new IllegalArgumentException("User not found with the provided email.");
+
+
+    }
+
+    //validate change password functionality
+    private void validateChangePasswordRequest(UserRequest request) {
+        if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
+            throw new ValidationException("Invalid email format.");
+        }
+        if (request.getPassword()== null || !isValidPassword(request.getPassword())) {
+            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
+        }
+    }
+
+
+
 }
