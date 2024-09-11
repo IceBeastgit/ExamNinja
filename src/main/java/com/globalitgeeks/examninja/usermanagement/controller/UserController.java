@@ -30,7 +30,15 @@ public class UserController {
     }
 
     // Login Endpoint
-
+     @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            User user = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
+    }
 
     // Change Password Endpoint
     @PutMapping("/change-password")
