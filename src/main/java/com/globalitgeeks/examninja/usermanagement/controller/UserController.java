@@ -47,7 +47,7 @@ public class UserController {
     public ResponseEntity<?> changePassword(@RequestBody UserRequest request) {
         try {
             User updatedUser = userService.changePassword(request);
-            ApiResponse<User> response = new ApiResponse<>("success", "Password changed successfully", updatedUser);
+            ApiResponse response = new ApiResponse("success", "Password changed successfully");
             return ResponseEntity.ok(response);
         } catch (ValidationException e) {
             return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
