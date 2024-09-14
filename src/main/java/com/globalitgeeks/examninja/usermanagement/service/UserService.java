@@ -1,6 +1,8 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
+import com.globalitgeeks.examninja.usermanagement.exception.InvalidPasswordException;
+import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -24,7 +26,7 @@ public class UserService {
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        return userRepository.save(user);
+       return userRepository.save(user);
     }
     // Validate user request fields
     private void validateUserRequest(UserRequest userRequest) {
@@ -38,7 +40,7 @@ public class UserService {
             throw new ValidationException("Invalid email format.");
         }
         if (userRequest.getPassword() == null || !isValidPassword(userRequest.getPassword())) {
-            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
+            throw new ValidationException("Password must be at least 8 and at most 15 characters long and contain 1 special character and 1 numbers.");
         }
     }
     // Check if email format is valid
@@ -50,25 +52,33 @@ public class UserService {
 
     // Check if password meets the requirements
     private boolean isValidPassword(String password) {
-        return password.length() >= 8 &&
+        return password.length() >= 8 && password.length()<=15 &&
                 password.chars().anyMatch(Character::isDigit) &&
                 password.chars().anyMatch(ch -> "!@#$%^&*()_+{}|:<>?[];',./`~".indexOf(ch) >= 0);
     }
 
     // Login user
-    public User login(String email, String password) throws Exception {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+    public User login(UserRequest request){
+        validateLoginRequest(request);
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getPassword().equals(password)) {
+            if (user.getPassword().equals(request.getPassword())) {
                 return user;
             } else {
-                throw new Exception("Invalid password");
+                throw new InvalidPasswordException("Incorrect password");
             }
         } else {
-            throw new Exception("User not found");
+            throw new UserNotFoundException("User not found");
         }
+    }
+
+    private void validateLoginRequest(UserRequest request) {
+        if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
+            throw new ValidationException("Invalid email format.");
+        }
+
     }
 
 
