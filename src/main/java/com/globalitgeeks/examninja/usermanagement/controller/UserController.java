@@ -20,31 +20,34 @@ public class UserController {
 
     // Registration Endpoint
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserRequest userRequest) {
-        try {
-            User registeredUser = userService.register(userRequest);
-            return ResponseEntity.status(201).body(registeredUser);
-        } catch (ValidationException e) {
-            throw e;
-        } catch (Exception e) {
-            return ResponseEntity.status(400).body(e.getMessage());
-        }
+    public ResponseEntity<ApiResponse<String>> register(@RequestBody UserRequest userRequest) {
+        userService.register(userRequest);
+        ApiResponse<String> response = new ApiResponse<>("success", "User Registered Successfully!");
+        return ResponseEntity.status(201).body(response);
     }
 
     // Login Endpoint
      @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest request) {
-        User user = userService.login(request);
-         ApiResponse response = new ApiResponse("success", "logged in successfully");
-
-         return ResponseEntity.ok(response);
+        try {
+            User user = userService.login(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(user);
+        } catch (Exception e) {
+            return ResponseEntity.status(401).body(e.getMessage());
+        }
     }
 
     // Change Password Endpoint
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody UserRequest request) {
-        User updatedUser = userService.changePassword(request);
-        ApiResponse response = new ApiResponse("success", "Password changed successfully");
-        return ResponseEntity.ok(response);
+        try {
+            User updatedUser = userService.changePassword(request);
+            ApiResponse<User> response = new ApiResponse<>("success", "Password changed successfully");
+            return ResponseEntity.ok(response);
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
+        }
     }
 }
