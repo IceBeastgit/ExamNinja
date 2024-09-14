@@ -1,7 +1,6 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
-import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -57,20 +56,18 @@ public class UserService {
     }
 
     // Login user
-    public User login(UserRequest request)   {
-        validateEmailPasswordRequest(request);
-
-        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
+    public User login(String email, String password) throws Exception {
+        Optional<User> userOptional = userRepository.findByEmail(email);
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getPassword().equals(request.getPassword())) {
+            if (user.getPassword().equals(password)) {
                 return user;
             } else {
-                throw new ValidationException("Invalid password");
+                throw new Exception("Invalid password");
             }
         } else {
-            throw new UserNotFoundException("User not found");
+            throw new Exception("User not found");
         }
     }
 
@@ -89,7 +86,7 @@ public class UserService {
     }
 
     //validate change password functionality
-    private void validateEmailPasswordRequest(UserRequest request) {
+    private void validateChangePasswordRequest(UserRequest request) {
         if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
             throw new ValidationException("Invalid email format.");
         }
