@@ -1,7 +1,6 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
-import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.InvalidPasswordException;
 import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
@@ -12,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.stereotype.Service;
-import java.util.Optional;
 
 import java.util.Optional;
 
