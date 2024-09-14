@@ -24,7 +24,7 @@ public class UserService {
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        return userRepository.save(user);
+       return userRepository.save(user);
     }
     // Validate user request fields
     private void validateUserRequest(UserRequest userRequest) {
@@ -38,7 +38,7 @@ public class UserService {
             throw new ValidationException("Invalid email format.");
         }
         if (userRequest.getPassword() == null || !isValidPassword(userRequest.getPassword())) {
-            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
+            throw new ValidationException("Password must be at least 8 and at most 15 characters long and contain 1 special character and 1 numbers.");
         }
     }
     // Check if email format is valid
@@ -50,7 +50,7 @@ public class UserService {
 
     // Check if password meets the requirements
     private boolean isValidPassword(String password) {
-        return password.length() >= 8 &&
+        return password.length() >= 8 && password.length()<=15 &&
                 password.chars().anyMatch(Character::isDigit) &&
                 password.chars().anyMatch(ch -> "!@#$%^&*()_+{}|:<>?[];',./`~".indexOf(ch) >= 0);
     }
