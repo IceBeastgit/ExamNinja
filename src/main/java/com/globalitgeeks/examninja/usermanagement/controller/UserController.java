@@ -37,14 +37,8 @@ public class UserController {
     // Change Password Endpoint
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody UserRequest request) {
-        try {
             User updatedUser = userService.changePassword(request);
             ApiResponse response = new ApiResponse("success", "Password changed successfully");
             return ResponseEntity.ok(response);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
-        }
     }
 }

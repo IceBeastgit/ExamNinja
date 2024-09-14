@@ -1,25 +1,25 @@
 package com.globalitgeeks.examninja.usermanagement.controller;
-import com.globalitgeeks.examninja.usermanagement.controller.UserController;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
+import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.service.UserService;
-import com.globalitgeeks.examninja.usermanagement.dto.ApiResponse;
-import com.globalitgeeks.examninja.usermanagement.dto.ErrorResponse;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
     @WebMvcTest(UserController.class)
     public class UserControllerTest {
@@ -86,7 +86,50 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                     .andExpect(status().isOk())
                     .andExpect(content().json("{\"status\":\"success\",\"message\":\"User Logged in Successfully!\"}"));
         }
+
+        // Test case for successful password change
         @Test
-    void changePassword() {
-    }
+        public void shouldReturn200WhenPasswordChangedSuccessfully() throws Exception {
+            UserRequest request = new UserRequest("John", "Doe", "john@example.com", "newPassword");
+
+            User updatedUser = new User();  // Mock updated user object
+            when(userService.changePassword(any(UserRequest.class))).thenReturn(updatedUser);
+
+            mockMvc.perform(put("/api/v1/users/change-password")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json("{\"status\":\"success\",\"message\":\"Password changed successfully\"}"));
+        }
+
+        // Test case for UserNotFoundException
+        @Test
+        public void shouldReturn404WhenUserNotFoundExceptionOccurs() throws Exception {
+            UserRequest request = new UserRequest("John", "Doe", "john@example.com", "newPassword");
+
+            // Simulate UserNotFoundException being thrown by the service layer
+            doThrow(new UserNotFoundException("User not found")).when(userService).changePassword(any(UserRequest.class));
+
+            mockMvc.perform(put("/api/v1/users/change-password")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isNotFound())
+                    .andExpect(content().json("{\"error\":\"User not found\"}"));
+        }
+
+        // Test case for general Exception
+        @Test
+        public void shouldReturn500WhenGeneralExceptionOccursDuringPasswordChange() throws Exception {
+            UserRequest request = new UserRequest("John", "Doe", "john@example.com", "newPassword");
+
+            // Simulate general exception being thrown by the service layer
+            doThrow(new RuntimeException("Unexpected error")).when(userService).changePassword(any(UserRequest.class));
+
+            mockMvc.perform(put("/api/v1/users/change-password")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andExpect(status().isInternalServerError())
+                    .andExpect(content().json("{\"error\":\"Unexpected error\"}"));
+        }
+
 }

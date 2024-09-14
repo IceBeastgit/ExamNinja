@@ -96,12 +96,12 @@ public class UserService {
     }
 
     //validate change password functionality
-    private void validateChangePasswordRequest(UserRequest request) {
+    private void validateEmailPasswordRequest(UserRequest request) {
         if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
             throw new ValidationException("Invalid email format.");
         }
         if (request.getPassword()== null || !isValidPassword(request.getPassword())) {
-            throw new ValidationException("Password must be at least 8 characters long and contain 1 special character and 1 numbers.");
+            throw new ValidationException("Password must be at least 8 characters and at most 15 characters long and contain 1 special character and 1 numbers.");
         }
     }
 
