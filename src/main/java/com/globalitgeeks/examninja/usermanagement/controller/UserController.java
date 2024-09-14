@@ -34,25 +34,17 @@ public class UserController {
     // Login Endpoint
      @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody UserRequest request) {
-        try {
-            User user = userService.login(request.getEmail(), request.getPassword());
-            return ResponseEntity.ok(user);
-        } catch (Exception e) {
-            return ResponseEntity.status(401).body(e.getMessage());
-        }
+        User user = userService.login(request);
+         ApiResponse response = new ApiResponse("success", "logged in successfully");
+
+         return ResponseEntity.ok(response);
     }
 
     // Change Password Endpoint
     @PutMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody UserRequest request) {
-        try {
-            User updatedUser = userService.changePassword(request);
-            ApiResponse response = new ApiResponse("success", "Password changed successfully");
-            return ResponseEntity.ok(response);
-        } catch (ValidationException e) {
-            return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(new ErrorResponse(e.getMessage()));
-        }
+        User updatedUser = userService.changePassword(request);
+        ApiResponse response = new ApiResponse("success", "Password changed successfully");
+        return ResponseEntity.ok(response);
     }
 }

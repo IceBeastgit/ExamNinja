@@ -1,6 +1,7 @@
 package com.globalitgeeks.examninja.usermanagement.service;
 
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
+import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -50,43 +51,45 @@ public class UserService {
 
     // Check if password meets the requirements
     private boolean isValidPassword(String password) {
-        return password.length() >= 8 &&
+        return password.length() >= 8 && password.length()<15 &&
                 password.chars().anyMatch(Character::isDigit) &&
                 password.chars().anyMatch(ch -> "!@#$%^&*()_+{}|:<>?[];',./`~".indexOf(ch) >= 0);
     }
 
     // Login user
-    public User login(String email, String password) throws Exception {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+    public User login(UserRequest request)   {
+        validateEmailPasswordRequest(request);
+
+        Optional<User> userOptional = userRepository.findByEmail(request.getEmail());
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getPassword().equals(password)) {
+            if (user.getPassword().equals(request.getPassword())) {
                 return user;
             } else {
-                throw new Exception("Invalid password");
+                throw new ValidationException("Invalid password");
             }
         } else {
-            throw new Exception("User not found");
+            throw new UserNotFoundException("User not found");
         }
     }
 
     // Change user password
-    public User changePassword(UserRequest request) throws Exception {
-        validateChangePasswordRequest(request);
+    public User changePassword(UserRequest request) throws UserNotFoundException {
+        validateEmailPasswordRequest(request);
         Optional<User> userOpt = userRepository.findByEmail(request.getEmail());
         if (userOpt.isPresent()) {
             User userPass = userOpt.get();
             userPass.setPassword(request.getPassword());
             return userRepository.save(userPass);
         }
-        else throw new IllegalArgumentException("User not found with the provided email.");
+        else throw new UserNotFoundException("User not found with the provided email.");
 
 
     }
 
     //validate change password functionality
-    private void validateChangePasswordRequest(UserRequest request) {
+    private void validateEmailPasswordRequest(UserRequest request) {
         if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
             throw new ValidationException("Invalid email format.");
         }
