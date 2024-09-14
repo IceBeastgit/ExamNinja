@@ -1,9 +1,6 @@
 package com.globalitgeeks.examninja.usermanagement.service;
-<<<<<<< HEAD
 import com.globalitgeeks.examninja.usermanagement.exception.InvalidPasswordException;
 import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
-=======
->>>>>>> origin/master
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -15,12 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.stereotype.Service;
-
-<<<<<<< HEAD
 import java.util.Optional;
-
-=======
->>>>>>> origin/master
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -115,7 +107,6 @@ public class UserServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
-<<<<<<< HEAD
     @Test
     public void shouldLoginSuccessfully() {
         // Arrange
@@ -182,15 +173,9 @@ public class UserServiceTest {
         assertThat(thrown).isInstanceOf(ValidationException.class)
                 .hasMessage("Invalid email format.");
         verify(userRepository, never()).findByEmail(anyString());
-=======
 
 
-
-    @Test
-    void login() {
->>>>>>> origin/master
     }
-
     @Test
     void changePassword() {
     }

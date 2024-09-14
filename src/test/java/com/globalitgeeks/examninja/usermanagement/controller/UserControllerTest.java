@@ -2,10 +2,7 @@ package com.globalitgeeks.examninja.usermanagement.controller;
 import com.globalitgeeks.examninja.usermanagement.controller.UserController;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
-<<<<<<< HEAD
 import com.globalitgeeks.examninja.usermanagement.model.User;
-=======
->>>>>>> origin/master
 import com.globalitgeeks.examninja.usermanagement.service.UserService;
 import com.globalitgeeks.examninja.usermanagement.dto.ApiResponse;
 import com.globalitgeeks.examninja.usermanagement.dto.ErrorResponse;
@@ -18,10 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
-<<<<<<< HEAD
 import static org.mockito.Mockito.when;
-=======
->>>>>>> origin/master
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -81,7 +75,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                     .andExpect(status().isInternalServerError())
                     .andExpect(content().json("{\"error\":\"Unexpected error\"}")); // Adjust this based on your actual ErrorResponse format
         }
-<<<<<<< HEAD
+
         @Test
         public void shouldReturn200WhenUserLoggedInSuccessfully() throws Exception {
             UserRequest userRequest = new UserRequest(null,null,"john@example.com", "password@1");
@@ -92,17 +86,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                     .andExpect(status().isOk())
                     .andExpect(content().json("{\"status\":\"success\",\"message\":\"User Logged in Successfully!\"}"));
         }
-        @Test
-=======
 
-
-
-    @Test
-    void login() {
-    }
-
-    @Test
->>>>>>> origin/master
     void changePassword() {
     }
 }
