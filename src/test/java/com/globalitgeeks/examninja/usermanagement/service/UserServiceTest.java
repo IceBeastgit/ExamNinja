@@ -12,9 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.stereotype.Service;
-
 import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.ArgumentMatchers.any;
@@ -175,8 +173,9 @@ public class UserServiceTest {
         assertThat(thrown).isInstanceOf(ValidationException.class)
                 .hasMessage("Invalid email format.");
         verify(userRepository, never()).findByEmail(anyString());
-    }
 
+
+    }
     @Test
     void changePassword() {
     }

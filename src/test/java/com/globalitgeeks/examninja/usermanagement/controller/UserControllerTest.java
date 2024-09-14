@@ -75,6 +75,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                     .andExpect(status().isInternalServerError())
                     .andExpect(content().json("{\"error\":\"Unexpected error\"}")); // Adjust this based on your actual ErrorResponse format
         }
+
         @Test
         public void shouldReturn200WhenUserLoggedInSuccessfully() throws Exception {
             UserRequest userRequest = new UserRequest(null,null,"john@example.com", "password@1");
