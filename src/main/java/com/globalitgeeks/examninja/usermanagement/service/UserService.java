@@ -81,6 +81,7 @@ public class UserService {
 
     }
 
+
     // Change user password
     public User changePassword(UserRequest request) throws UserNotFoundException {
         validateEmailPasswordRequest(request);
