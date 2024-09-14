@@ -1,4 +1,6 @@
 package com.globalitgeeks.examninja.usermanagement.service;
+import com.globalitgeeks.examninja.usermanagement.exception.InvalidPasswordException;
+import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -10,6 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -105,11 +109,72 @@ public class UserServiceTest {
         verify(userRepository, never()).save(any(User.class));
     }
 
+    @Test
+    public void shouldLoginSuccessfully() {
+        // Arrange
+        UserRequest request = new UserRequest("John", "Doe", "john.doe@example.com", "Password1!");
+        User user = new User();
+        user.setEmail("john.doe@example.com");
+        user.setPassword("Password1!");
 
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(user));
 
+        // Act
+        User loggedInUser = userService.login(request);
+
+        // Assert
+        assertThat(loggedInUser).isNotNull();
+        assertThat(loggedInUser.getEmail()).isEqualTo("john.doe@example.com");
+        verify(userRepository, times(1)).findByEmail(request.getEmail());
+    }
 
     @Test
-    void login() {
+    public void shouldThrowUserNotFoundExceptionWhenUserDoesNotExist() {
+        // Arrange
+        UserRequest request = new UserRequest("John", "Doe", "unknown@example.com", "Password1!");
+
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.empty());
+
+        // Act
+        Throwable thrown = catchThrowable(() -> userService.login(request));
+
+        // Assert
+        assertThat(thrown).isInstanceOf(UserNotFoundException.class)
+                .hasMessage("User not found");
+        verify(userRepository, times(1)).findByEmail(request.getEmail());
+    }
+
+    @Test
+    public void shouldThrowInvalidPasswordExceptionWhenPasswordIsIncorrect() {
+        // Arrange
+        UserRequest request = new UserRequest("John", "Doe", "john.doe@example.com", "WrongPassword");
+        User user = new User();
+        user.setEmail("john.doe@example.com");
+        user.setPassword("Password1!");
+
+        when(userRepository.findByEmail(request.getEmail())).thenReturn(Optional.of(user));
+
+        // Act
+        Throwable thrown = catchThrowable(() -> userService.login(request));
+
+        // Assert
+        assertThat(thrown).isInstanceOf(InvalidPasswordException.class)
+                .hasMessage("Incorrect password");
+        verify(userRepository, times(1)).findByEmail(request.getEmail());
+    }
+
+    @Test
+    public void shouldThrowValidationExceptionWhenEmailIsInvalidInLogin() {
+        // Arrange
+        UserRequest request = new UserRequest("John", "Doe", "invalid-email", "Password1!");
+
+        // Act
+        Throwable thrown = catchThrowable(() -> userService.login(request));
+
+        // Assert
+        assertThat(thrown).isInstanceOf(ValidationException.class)
+                .hasMessage("Invalid email format.");
+        verify(userRepository, never()).findByEmail(anyString());
     }
 
     @Test

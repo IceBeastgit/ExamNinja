@@ -2,6 +2,7 @@ package com.globalitgeeks.examninja.usermanagement.controller;
 import com.globalitgeeks.examninja.usermanagement.controller.UserController;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
 import com.globalitgeeks.examninja.usermanagement.exception.ValidationException;
+import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.service.UserService;
 import com.globalitgeeks.examninja.usermanagement.dto.ApiResponse;
 import com.globalitgeeks.examninja.usermanagement.dto.ErrorResponse;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -73,14 +75,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
                     .andExpect(status().isInternalServerError())
                     .andExpect(content().json("{\"error\":\"Unexpected error\"}")); // Adjust this based on your actual ErrorResponse format
         }
+        @Test
+        public void shouldReturn200WhenUserLoggedInSuccessfully() throws Exception {
+            UserRequest userRequest = new UserRequest(null,null,"john@example.com", "password@1");
 
-
-
-    @Test
-    void login() {
-    }
-
-    @Test
+            mockMvc.perform(post("/api/v1/users/login")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(userRequest)))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json("{\"status\":\"success\",\"message\":\"User Logged in Successfully!\"}"));
+        }
+        @Test
     void changePassword() {
     }
 }
