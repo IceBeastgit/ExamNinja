@@ -3,13 +3,13 @@ package com.globalitgeeks.examninja.usermanagement.repository;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 class UserRepositoryTest {
 
