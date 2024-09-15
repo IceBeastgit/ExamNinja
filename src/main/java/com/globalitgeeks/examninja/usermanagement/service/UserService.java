@@ -49,7 +49,6 @@ public class UserService {
         Pattern pattern = Pattern.compile(emailRegex);
         return pattern.matcher(email).matches();
     }
-
     // Check if password meets the requirements
     private boolean isValidPassword(String password) {
         return password.length() >= 8 && password.length()<=15 &&
@@ -73,14 +72,11 @@ public class UserService {
             throw new UserNotFoundException("User not found");
         }
     }
-
     private void validateLoginRequest(UserRequest request) {
         if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
             throw new ValidationException("Invalid email format.");
         }
-
     }
-
 
     // Change user password
     public User changePassword(UserRequest request) throws UserNotFoundException {
@@ -92,10 +88,7 @@ public class UserService {
             return userRepository.save(userPass);
         }
         else throw new UserNotFoundException("User not found with the provided email.");
-
-
     }
-
     //validate change password functionality
     private void validateEmailPasswordRequest(UserRequest request) {
         if (request.getEmail() == null || !isValidEmail(request.getEmail())) {
@@ -105,7 +98,4 @@ public class UserService {
             throw new ValidationException("Password must be at least 8 characters and at most 15 characters long and contain 1 special character and 1 numbers.");
         }
     }
-
-
-
 }
