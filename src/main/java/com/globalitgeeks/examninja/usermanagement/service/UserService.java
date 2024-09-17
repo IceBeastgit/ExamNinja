@@ -3,6 +3,7 @@ package com.globalitgeeks.examninja.usermanagement.service;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRegisterRequest;
 import com.globalitgeeks.examninja.usermanagement.dto.UserRequest;
 import com.globalitgeeks.examninja.usermanagement.exception.InvalidPasswordException;
+import com.globalitgeeks.examninja.usermanagement.exception.UserAlreadyExistsException;
 import com.globalitgeeks.examninja.usermanagement.exception.UserNotFoundException;
 import com.globalitgeeks.examninja.usermanagement.model.User;
 import com.globalitgeeks.examninja.usermanagement.repository.UserRepository;
@@ -18,6 +19,10 @@ public class UserService {
 
     // Register a new user
     public User register(UserRegisterRequest registerRequest) {
+        Optional<User> userOptional = userRepository.findByEmail(registerRequest.getEmail());
+        if (userOptional.isPresent()) {
+            throw new UserAlreadyExistsException("User Already Exists with this Email!");
+        }
         User user = new User();
         user.setFirstName(registerRequest.getFirstName());
         user.setLastName(registerRequest.getLastName());
