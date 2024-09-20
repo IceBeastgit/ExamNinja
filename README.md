@@ -1,4 +1,5 @@
 Exam Ninja: 
+
 User Management - Backend Project.
   This project is the backend RESTful service built using Spring Boot. It includes  Registration, Login and change password API.
 
@@ -74,9 +75,9 @@ http://localhost:808
 -Swagger API Docs: 
 http://localhost:8080/swagger-ui/index.html
 
-7 Running Tests
+ 7 Running Tests
 To run tests:
 Goto src/test directory.
 You can right-click on individual test classes or methods and choose Run to run specific tests.
 
-8 For manual Testing use Postman.
+ 8 For manual Testing use Postman.
