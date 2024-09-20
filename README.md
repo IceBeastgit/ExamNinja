@@ -59,6 +59,8 @@ Before running the project, ensure the following should be installed:
 
 1. Clone the Repository
 
+https://github.com/IceBeastgit/ExamNinja.git
+
 -Open IntelliJ IDEA.
 
 -Navigate to File → New → Project from Version Control.
