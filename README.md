@@ -110,11 +110,11 @@ IntelliJ will start the application, and you should see the Spring Boot banner i
 
 -Once the application starts, you can access it in your browser:
 
-http://localhost:808
+http://localhost:8081
 
 -Swagger API Docs: 
 
-http://localhost:8080/swagger-ui/index.html
+http://localhost:8081/swagger-ui/index.html
 
 
 7. Run the Tests
