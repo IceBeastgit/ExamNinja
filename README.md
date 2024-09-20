@@ -117,7 +117,7 @@ http://localhost:808
 http://localhost:8080/swagger-ui/index.html
 
 
-7 Running Tests
+7. Run the Tests
 
 To run tests:
 
@@ -125,3 +125,6 @@ Goto src/test directory.
 
 You can right-click on individual test classes or methods and choose Run to run specific tests.
 
+8. For Manual Tests.
+
+ -Use PostMan
