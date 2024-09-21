@@ -81,6 +81,12 @@ Wait for IntelliJ to download all the necessary dependencies from Maven. You sho
 
 properties-
 
+While running application in local server use - 
+spring.profiles.active=local
+
+Running application remotely -
+spring.profiles.active=test
+
 spring.datasource.url=jdbc:mysql://localhost:3306/exam_ninja
 
 spring.datasource.username=<username-to-be-inserted>
@@ -112,11 +118,11 @@ IntelliJ will start the application, and you should see the Spring Boot banner i
 
 -Once the application starts, you can access it in your browser:
 
-http://localhost:8081
+http://localhost:8080
 
 -Swagger API Docs: 
 
-http://localhost:8081/swagger-ui/index.html
+http://localhost:8080/swagger-ui/index.html
 
 
 7. Run the Tests
